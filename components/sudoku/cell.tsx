@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SudokuCell } from "@/lib/types";
 import { useSudoku } from "@/contexts/sudoku-context";
@@ -12,9 +11,8 @@ export function Cell({
   rowIndex: number;
   colIndex: number;
 }) {
-  const { selectedValue, setSelectedValue, board, updateBoard, solution } =
+  const { selectedValue, setSelectedValue, board, updateGame, solution } =
     useSudoku();
-  const [notes, setNotes] = useState<number[]>(cell.value ? [] : []);
 
   function handleCellChange(
     rowIndex: number,
@@ -34,8 +32,16 @@ export function Cell({
 
     const newValue =
       key === "Backspace" || key === "Delete" ? null : parseInt(key);
+
+    const updatedCell = {
+      row: rowIndex,
+      column: colIndex,
+      value: newValue,
+      isFixed: false,
+      notes: [],
+    };
     setSelectedValue(newValue);
-    updateBoard(rowIndex, colIndex, newValue);
+    updateGame(updatedCell);
   }
 
   function handleCellClick(
@@ -46,20 +52,30 @@ export function Cell({
     const cellIsFixed = board[rowIndex][colIndex].isFixed;
 
     if (!cellIsFixed && (event.metaKey || event.ctrlKey)) {
-      updateBoard(rowIndex, colIndex, selectedValue);
+      const updatedCell = {
+        row: rowIndex,
+        column: colIndex,
+        value: selectedValue,
+        isFixed: false,
+        notes: [],
+      };
+      updateGame(updatedCell);
     } else if (event.altKey && selectedValue) {
       event.preventDefault();
-      setNotes((prevNotes) => [...prevNotes, selectedValue]);
+      const currentNotes = board[rowIndex][colIndex].notes;
+      const noteIndex = currentNotes.indexOf(selectedValue);
+      const updatedCell = {
+        ...board[rowIndex][colIndex],
+        notes:
+          noteIndex >= 0
+            ? currentNotes.filter((n) => n !== selectedValue)
+            : [...currentNotes, selectedValue],
+      };
+      updateGame(updatedCell);
     } else {
       setSelectedValue(board[rowIndex][colIndex].value);
     }
   }
-
-  useEffect(() => {
-    if (cell.value) {
-      setNotes([]);
-    }
-  }, [cell.value]);
 
   return (
     <div
@@ -83,17 +99,17 @@ export function Cell({
       {cell.value ? (
         cell.value
       ) : (
-        <div className="grid grid-cols-3 grid-rows-3 gap-0 w-full h-full text-[10px]">
+        <div className="grid grid-cols-3 grid-rows-3 gap-0.5 p-0.5 w-full h-full text-[10px]">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-            <div key={num} className="flex p-0.5">
-              <div
-                className={cn(
-                  "w-full h-full flex items-center justify-center rounded-sm",
-                  notes.includes(num) && num === selectedValue && "bg-blue-200"
-                )}
-              >
-                {notes.includes(num) ? num : ""}
-              </div>
+            <div
+              className={cn(
+                "w-full h-full flex items-center justify-center rounded-[2px]",
+                cell.notes.includes(num) &&
+                  num === selectedValue &&
+                  "bg-blue-200"
+              )}
+            >
+              {cell.notes.includes(num) ? num : ""}
             </div>
           ))}
         </div>

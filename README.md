@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Sudoku Game
+
+A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind CSS.
+
+## Features
+
+- 🎯 Real-time validation of moves
+- 🎨 Minimalist design
+- ⌨️ Keyboard shortcuts for efficient gameplay
+
+## Roadmap
+
+- Notes
+  - Toggle notes
+  - Clear notes on cell filled
+- Puzzle generation
+  - Ensure unique solution
+- Timer
+  - Start/stop timer
+  - Display time
+- Settings
+  - Change difficulty
+  - Toggle theme?
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies with `npm install`, `yarn install`, or `pnpm install`
+3. Run the development server with `npm run dev`, `yarn dev`, or `pnpm dev`
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to play the game
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How to Play
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Click on a cell to select it
+- Use the number bar or keyboard to input numbers
+- Use keyboard shortcuts (Cmd/Ctrl + 1-9) to select numbers
+- When a number is selected:
+  - hold Command/Ctrl while clicking on a cell to fill it
+  - hold Option/Alt while clicking on a cell to toggle notes
+- Invalid moves will be highlighted in red
+- Complete the puzzle by filling all cells correctly
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+/
+├── app/ # Next.js app directory
+├── components/ # React components
+│ ├── sudoku/ # Sudoku-specific components
+│ └── ui/ # Reusable UI components
+├── contexts/ # React contexts
+├── lib/ # Utility functions and game logic
+└── public/ # Static assets
 
-## Learn More
+### Key Components
 
-To learn more about Next.js, take a look at the following resources:
+- `lib/sudoku.ts` - Core game logic including puzzle generation and validation
+- `contexts/sudoku-context.tsx` - Game state management and business logic
+- `components/sudoku/` - Sudoku-specific UI components:
+  - `board.tsx` - Main game board
+  - `cell.tsx` - Individual cell component
+  - `number-bar.tsx` - Number selection interface
+  - `modal.tsx` - Game completion modal
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Styling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project uses Tailwind CSS for styling. You can customize the theme by modifying:
 
-## Deploy on Vercel
+- `tailwind.config.ts` - Theme configuration
+- `app/globals.css` - Global styles and CSS variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Game Difficulty
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Adjust the puzzle difficulty in `contexts/sudoku-context.tsx` by modifying the difficulty constant (value between 0.0 for easiest and 1.0 for hardest).
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

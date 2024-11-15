@@ -11,7 +11,6 @@ import { SudokuCell } from "@/lib/types";
 
 import confetti from "canvas-confetti";
 
-
 interface SudokuContextType {
   board: SudokuCell[][];
   solution: number[][];
@@ -19,13 +18,9 @@ interface SudokuContextType {
   hasError: boolean;
   isComplete: boolean;
   remainingNumbers: Record<number, number>;
-  generateNewBoard: () => void;
   setSelectedValue: (value: number | null) => void;
-  updateBoard: (
-    rowIndex: number,
-    colIndex: number,
-    newValue: number | null
-  ) => void;
+  generateNewBoard: () => void;
+  updateGame: (updatedCell: SudokuCell) => void;
 }
 
 const SudokuContext = createContext<SudokuContextType | undefined>(undefined);
@@ -45,51 +40,51 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     const { board, solution } = generatePuzzle(difficulty);
     setSolution(solution);
 
-    const initialBoard: SudokuCell[][] = board.map((row) =>
-      row.map((value) => ({
+    const initialBoard: SudokuCell[][] = board.map((row, rowIndex) =>
+      row.map((value, colIndex) => ({
         value: value === 0 ? null : value,
         isFixed: value !== 0,
+        row: rowIndex,
+        column: colIndex,
+        notes: [],
       }))
     );
     setBoard(initialBoard);
   }
 
   // TODO move logic to lib
-  function updateBoard(
-    rowIndex: number,
-    colIndex: number,
-    newValue: number | null
-  ) {
-    setBoard((prevBoard) => {
-      const newBoard = [...prevBoard];
-      newBoard[rowIndex] = [...newBoard[rowIndex]];
-      newBoard[rowIndex][colIndex] = {
-        value: newValue,
-        isFixed: false,
-      };
+  function updateGame(updatedCell: SudokuCell) {
+    const newBoard = board.map((row, rowIndex) =>
+      rowIndex === updatedCell.row
+        ? row.map((cell, colIndex) =>
+            colIndex === updatedCell.column ? updatedCell : cell
+          )
+        : row
+    );
 
-      if (newValue !== null) {
-        const currentBoardNumbers = newBoard.map((row) =>
-          row.map((cell) => cell.value || 0)
-        );
-        const isValid = isValidMove(
-          currentBoardNumbers,
-          rowIndex,
-          colIndex,
-          newValue
-        );
-        setHasError(!isValid);
+    setBoard(newBoard);
 
-        if (isValid) {
-          const isComplete = checkCompletion(newBoard, solution);
-          setIsComplete(isComplete);
-        }
-      } else {
-        setHasError(false);
+    if (updatedCell.value !== null) {
+      const currentBoardNumbers = newBoard.map((row) =>
+        row.map((cell) => cell.value || 0)
+      );
+      const isValid = isValidMove(
+        currentBoardNumbers,
+        updatedCell.row,
+        updatedCell.column,
+        updatedCell.value
+      );
+      setHasError(!isValid);
+
+      if (isValid) {
+        const isComplete = checkCompletion(newBoard, solution);
+        setIsComplete(isComplete);
       }
+    } else {
+      setHasError(false);
+    }
 
-      return newBoard;
-    });
+    return newBoard;
   }
 
   useEffect(() => {
@@ -138,12 +133,12 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     board,
     solution,
     selectedValue,
-    setSelectedValue,
     hasError,
     isComplete,
     remainingNumbers,
+    setSelectedValue,
     generateNewBoard,
-    updateBoard,
+    updateGame,
   };
 
   return (
