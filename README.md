@@ -5,14 +5,12 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 ## Features
 
 - 🎯 Real-time validation of moves
-- 🎨 Minimalist design
+- 📝 Notes
 - ⌨️ Keyboard shortcuts for efficient gameplay
+- 🎨 Minimalist design
 
 ## Roadmap
 
-- Notes
-  - Toggle notes
-  - Clear notes on cell filled
 - Puzzle generation
   - Ensure unique solution
 - Timer

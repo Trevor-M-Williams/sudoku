@@ -1,5 +1,30 @@
 import { SudokuCell } from "./types";
 
+export const calculateRemainingNumbers = (
+  board: SudokuCell[][],
+  solution: number[][]
+) => {
+  const counts: { [key: number]: number } = {};
+  // Initialize counts for numbers 1-9
+  for (let i = 1; i <= 9; i++) {
+    counts[i] = 9;
+  }
+
+  // Subtract the count of each number that appears in the board
+  board.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      if (cell.value) {
+        // Only decrement count if number is in correct position
+        if (cell.value === solution[rowIndex][colIndex]) {
+          counts[cell.value]--;
+        }
+      }
+    });
+  });
+
+  return counts;
+};
+
 export function checkCompletion(board: SudokuCell[][], solution: number[][]) {
   const isComplete = board.every((row, rowIndex) =>
     row.every((cell, colIndex) => cell.value === solution[rowIndex][colIndex])
@@ -7,67 +32,7 @@ export function checkCompletion(board: SudokuCell[][], solution: number[][]) {
 
   return isComplete;
 }
-// Helper to check if a number is valid in a given position
-export function isValidMove(
-  board: number[][],
-  row: number,
-  col: number,
-  num: number
-): boolean {
-  // Check row
-  for (let x = 0; x < 9; x++) {
-    if (x !== col && board[row][x] === num) {
-      return false;
-    }
-  }
 
-  // Check column
-  for (let x = 0; x < 9; x++) {
-    if (x !== row && board[x][col] === num) {
-      return false;
-    }
-  }
-
-  // Check 3x3 box
-  let boxRow = Math.floor(row / 3) * 3;
-  let boxCol = Math.floor(col / 3) * 3;
-
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (
-        (boxRow + i !== row || boxCol + j !== col) &&
-        board[boxRow + i][boxCol + j] === num
-      ) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-// Solve the puzzle using backtracking
-export function solveSudoku(board: number[][]): boolean {
-  for (let row = 0; row < 9; row++) {
-    for (let col = 0; col < 9; col++) {
-      if (board[row][col] === 0) {
-        for (let num = 1; num <= 9; num++) {
-          if (isValidMove(board, row, col, num)) {
-            board[row][col] = num;
-            if (solveSudoku(board)) {
-              return true;
-            }
-            board[row][col] = 0;
-          }
-        }
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-// Generate a new puzzle
 export function generatePuzzle(difficulty: number = 0.5): {
   board: number[][];
   solution: number[][];
@@ -109,27 +74,60 @@ export function generatePuzzle(difficulty: number = 0.5): {
   return { board, solution };
 }
 
-export const calculateRemainingNumbers = (
-  board: SudokuCell[][],
-  solution: number[][]
-) => {
-  const counts: { [key: number]: number } = {};
-  // Initialize counts for numbers 1-9
-  for (let i = 1; i <= 9; i++) {
-    counts[i] = 9;
+export function isValidMove(
+  board: number[][],
+  row: number,
+  col: number,
+  num: number
+): boolean {
+  // Check row
+  for (let x = 0; x < 9; x++) {
+    if (x !== col && board[row][x] === num) {
+      return false;
+    }
   }
 
-  // Subtract the count of each number that appears in the board
-  board.forEach((row, rowIndex) => {
-    row.forEach((cell, colIndex) => {
-      if (cell.value) {
-        // Only decrement count if number is in correct position
-        if (cell.value === solution[rowIndex][colIndex]) {
-          counts[cell.value]--;
-        }
-      }
-    });
-  });
+  // Check column
+  for (let x = 0; x < 9; x++) {
+    if (x !== row && board[x][col] === num) {
+      return false;
+    }
+  }
 
-  return counts;
-};
+  // Check 3x3 box
+  let boxRow = Math.floor(row / 3) * 3;
+  let boxCol = Math.floor(col / 3) * 3;
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (
+        (boxRow + i !== row || boxCol + j !== col) &&
+        board[boxRow + i][boxCol + j] === num
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+export function solveSudoku(board: number[][]): boolean {
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      if (board[row][col] === 0) {
+        for (let num = 1; num <= 9; num++) {
+          if (isValidMove(board, row, col, num)) {
+            board[row][col] = num;
+            if (solveSudoku(board)) {
+              return true;
+            }
+            board[row][col] = 0;
+          }
+        }
+        return false;
+      }
+    }
+  }
+  return true;
+}
