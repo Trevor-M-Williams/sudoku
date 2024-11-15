@@ -73,7 +73,8 @@ export function Cell({ cell }: { cell: SudokuCell }) {
       onKeyDown={(e) => handleCellChange(cell, e)}
       onClick={(e) => handleCellClick(cell, e)}
       className={cn(
-        "w-full aspect-square flex items-center justify-center text-lg border font-bold select-none",
+        "w-full aspect-square flex items-center justify-center border font-bold select-none",
+        "text-[min(5vw,2rem)]",
         "bg-white",
         cell.isFixed ? "bg-gray-100 cursor-default" : "cursor-pointer",
         selectedValue && cell.value === selectedValue && "bg-blue-200",
@@ -89,7 +90,7 @@ export function Cell({ cell }: { cell: SudokuCell }) {
       {cell.value ? (
         cell.value
       ) : (
-        <div className="grid grid-cols-3 grid-rows-3 gap-0.5 p-0.5 w-full h-full text-[10px]">
+        <div className="grid grid-cols-3 grid-rows-3 gap-0.5 p-0.5 w-full h-full text-[min(2.4vw,0.8rem)]">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <div
               className={cn(

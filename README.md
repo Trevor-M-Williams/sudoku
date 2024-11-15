@@ -13,11 +13,9 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 ## Roadmap
 
 - Timer
-  - Start/stop timer
-  - Display time
+- Undo/Redo
 - Settings
-  - Change difficulty
-  - Toggle theme?
+- Toggle theme?
 - Stats
 
   - Total games played
@@ -26,7 +24,6 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 
   ## Tweaks
 
-  - responsive font
   - no focus when holding alt
 
 ## Tech Stack
