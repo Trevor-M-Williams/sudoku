@@ -19,6 +19,10 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 - Settings
   - Change difficulty
   - Toggle theme?
+- Stats
+  - Total games played
+  - Percentage of games completed
+  - Best time
 
 ## Tech Stack
 

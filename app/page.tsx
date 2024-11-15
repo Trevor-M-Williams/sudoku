@@ -17,9 +17,9 @@ function Sudoku() {
   const { board } = useSudoku();
 
   if (!board || board.length === 0) return null;
-  
+
   return (
-    <main className="flex min-h-screen items-center justify-center p-2">
+    <main className="flex min-h-screen items-center justify-center p-4">
       <div className="size-full max-w-2xl flex flex-col items-center gap-4">
         <SudokuBoard />
         <NumberBar />
