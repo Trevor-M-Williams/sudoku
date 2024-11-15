@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Cell } from "./cell";
-import { useSudoku } from "@/contexts/sudoku-context";
+import { useSudoku } from "@/context/sudoku-context";
 
 export function SudokuBoard() {
   const { board } = useSudoku();
@@ -13,12 +13,7 @@ export function SudokuBoard() {
     >
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
-          <Cell
-            key={`${rowIndex}-${colIndex}`}
-            cell={cell}
-            rowIndex={rowIndex}
-            colIndex={colIndex}
-          />
+          <Cell key={`${rowIndex}-${colIndex}`} cell={cell} />
         ))
       )}
     </div>

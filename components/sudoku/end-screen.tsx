@@ -1,9 +1,7 @@
-import { useSudoku } from "@/contexts/sudoku-context";
+import { useSudoku } from "@/context/sudoku-context";
 
-export function SudokuModal() {
-  const { isComplete, generateNewBoard } = useSudoku();
-
-  if (!isComplete) return null;
+export function SudokuEndScreen() {
+  const { generateNewBoard } = useSudoku();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">

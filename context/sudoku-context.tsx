@@ -11,13 +11,18 @@ import { SudokuCell } from "@/lib/types";
 
 import confetti from "canvas-confetti";
 
+type GameStatus = "start" | "playing" | "complete";
+
 interface SudokuContextType {
+  gameStatus: GameStatus;
   board: SudokuCell[][];
   solution: number[][];
   selectedValue: number | null;
-  isComplete: boolean;
   remainingNumbers: Record<number, number>;
+  difficulty: number;
+  setGameStatus: (status: GameStatus) => void;
   setSelectedValue: (value: number | null) => void;
+  setDifficulty: (difficulty: number) => void;
   generateNewBoard: () => void;
   updateGame: (updatedCell: SudokuCell) => void;
 }
@@ -25,16 +30,15 @@ interface SudokuContextType {
 const SudokuContext = createContext<SudokuContextType | undefined>(undefined);
 
 export function SudokuProvider({ children }: { children: React.ReactNode }) {
+  const [gameStatus, setGameStatus] = useState<GameStatus>("start");
   const [board, setBoard] = useState<SudokuCell[][]>([]);
   const [solution, setSolution] = useState<number[][]>([]);
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
-
-  const difficulty = 0.5;
+  const [difficulty, setDifficulty] = useState(0.5);
 
   // TODO move logic to lib
   function generateNewBoard() {
-    setIsComplete(false);
+    console.log("generating new board", difficulty);
     const { board, solution } = generatePuzzle(difficulty);
     setSolution(solution);
 
@@ -105,7 +109,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
 
       if (isValid) {
         const isComplete = checkCompletion(newBoard, solution);
-        setIsComplete(isComplete);
+        setGameStatus(isComplete ? "complete" : "playing");
       }
     }
 
@@ -113,11 +117,13 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    generateNewBoard();
-  }, []);
+    if (gameStatus === "playing") {
+      generateNewBoard();
+    }
+  }, [gameStatus]);
 
   useEffect(() => {
-    if (isComplete) {
+    if (gameStatus === "complete") {
       const screenWidth = window.innerWidth;
 
       confetti({
@@ -136,7 +142,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
         origin: { x: 1.2, y: 0.1 },
       });
     }
-  }, [isComplete]);
+  }, [gameStatus]);
 
   useEffect(() => {
     // Meta key + number to select a number
@@ -156,12 +162,15 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   const remainingNumbers = calculateRemainingNumbers(board, solution);
 
   const value = {
+    gameStatus,
     board,
     solution,
     selectedValue,
-    isComplete,
     remainingNumbers,
+    difficulty,
+    setGameStatus,
     setSelectedValue,
+    setDifficulty,
     generateNewBoard,
     updateGame,
   };

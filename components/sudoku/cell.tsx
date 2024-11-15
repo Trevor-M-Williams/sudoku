@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { SudokuCell } from "@/lib/types";
-import { useSudoku } from "@/contexts/sudoku-context";
+import { useSudoku } from "@/context/sudoku-context";
 
 export function Cell({ cell }: { cell: SudokuCell }) {
   const { selectedValue, setSelectedValue, updateGame, solution } = useSudoku();
@@ -73,17 +73,17 @@ export function Cell({ cell }: { cell: SudokuCell }) {
       onKeyDown={(e) => handleCellChange(cell, e)}
       onClick={(e) => handleCellClick(cell, e)}
       className={cn(
-        "w-full aspect-square flex items-center justify-center text-lg border font-bold",
+        "w-full aspect-square flex items-center justify-center text-lg border font-bold select-none",
         "bg-white",
         cell.isFixed ? "bg-gray-100 cursor-default" : "cursor-pointer",
-        selectedValue && cell.value === selectedValue && "bg-blue-100",
+        selectedValue && cell.value === selectedValue && "bg-blue-200",
         !cell.isFixed &&
           cell.value &&
           cell.value !== solution[row][column] &&
           "text-red-500",
         column % 3 === 2 && column !== 8 && "border-r-2 border-r-gray-400",
         row % 3 === 2 && row !== 8 && "border-b-2 border-b-gray-400",
-        "focus:outline-none focus:bg-blue-100"
+        "focus:outline-none focus:bg-blue-200"
       )}
     >
       {cell.value ? (

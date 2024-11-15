@@ -1,6 +1,6 @@
-import { useSudoku } from "@/contexts/sudoku-context";
+import { useSudoku } from "@/context/sudoku-context";
 
-export function NumberBar() {
+export function SudokuNumberBar() {
   const { remainingNumbers, selectedValue, setSelectedValue } = useSudoku();
 
   function handleNumberSelect(num: number) {

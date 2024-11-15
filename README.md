@@ -4,15 +4,14 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 
 ## Features
 
-- 🎯 Real-time validation of moves
+- Unique puzzle generation
+- 🎯 Real-time move validation
 - 📝 Notes
 - ⌨️ Keyboard shortcuts for efficient gameplay
 - 🎨 Minimalist design
 
 ## Roadmap
 
-- Puzzle generation
-  - Ensure unique solution
 - Timer
   - Start/stop timer
   - Display time
@@ -20,9 +19,15 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
   - Change difficulty
   - Toggle theme?
 - Stats
+
   - Total games played
   - Percentage of games completed
   - Best time
+
+  ## Tweaks
+
+  - responsive font
+  - no focus when holding alt
 
 ## Tech Stack
 
