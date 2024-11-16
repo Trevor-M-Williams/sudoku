@@ -12,12 +12,10 @@ export function Cell({ cell }: { cell: SudokuCell }) {
   ) {
     if (cell.isFixed) return;
 
+    if (event.metaKey || event.ctrlKey) return;
+
     const key = event.key;
     if (!/^[1-9]$/.test(key) && key !== "Backspace" && key !== "Delete") {
-      return;
-    }
-
-    if (event.metaKey || event.ctrlKey) {
       return;
     }
 
@@ -51,7 +49,6 @@ export function Cell({ cell }: { cell: SudokuCell }) {
       updateGame(updatedCell);
     } else if (cellIsEmpty && altKeyPressed && selectedValue) {
       // Cell is empty, the user is holding down the alt key, and a number is selected
-      event.preventDefault();
       const currentNotes = cell.notes;
       const noteIndex = currentNotes.indexOf(selectedValue);
       const updatedCell = {
@@ -61,6 +58,7 @@ export function Cell({ cell }: { cell: SudokuCell }) {
             ? currentNotes.filter((n) => n !== selectedValue)
             : [...currentNotes, selectedValue],
       };
+
       updateGame(updatedCell);
     } else {
       setSelectedValue(cell.value);
@@ -84,6 +82,7 @@ export function Cell({ cell }: { cell: SudokuCell }) {
           "text-red-500",
         column % 3 === 2 && column !== 8 && "border-r-2 border-r-gray-400",
         row % 3 === 2 && row !== 8 && "border-b-2 border-b-gray-400",
+        // "focus:outline-none focus:border-blue-400"
         "focus:outline-none focus:bg-blue-200"
       )}
     >
@@ -97,7 +96,7 @@ export function Cell({ cell }: { cell: SudokuCell }) {
                 "w-full h-full flex items-center justify-center rounded-[2px]",
                 cell.notes.includes(num) &&
                   num === selectedValue &&
-                  "bg-blue-200"
+                  "bg-blue-300"
               )}
             >
               {cell.notes.includes(num) ? num : ""}

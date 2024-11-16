@@ -15,7 +15,7 @@ export default function SudokuWrapper() {
 }
 
 function Sudoku() {
-  const { board, gameStatus } = useSudoku();
+  const { gameStatus, formattedTime } = useSudoku();
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
@@ -25,6 +25,9 @@ function Sudoku() {
           <>
             <SudokuBoard />
             <SudokuNumberBar />
+            <div className="absolute top-2 right-2 font-bold text-lg text-muted-foreground">
+              {formattedTime}
+            </div>
           </>
         )}
         {gameStatus === "complete" && <SudokuEndScreen />}

@@ -12,19 +12,21 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 
 ## Roadmap
 
-- Timer
-- Undo/Redo
-- Settings
+- Count errors or don't highlight
+  - Could be 2 different modes?
 - Toggle theme?
 - Stats
-
+  - high scores
   - Total games played
   - Percentage of games completed
   - Best time
 
   ## Tweaks
 
-  - no focus when holding alt
+  - blur cell when holding alt
+  - click shouldnt add to history (or update game) if there is no change
+  - undo didnt replace notes
+  - board flicker on new game
 
 ## Tech Stack
 
@@ -41,14 +43,12 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 
 ## How to Play
 
-- Click on a cell to select it
-- Use the number bar or keyboard to input numbers
-- Use keyboard shortcuts (Cmd/Ctrl + 1-9) to select numbers
+- Use the number bar or keyboard shortcuts (Cmd/Ctrl + 1-9) to select a number
 - When a number is selected:
   - hold Command/Ctrl while clicking on a cell to fill it
   - hold Option/Alt while clicking on a cell to toggle notes
+- You can also fill cells by clicking on them and pressing the number on your keyboard
 - Invalid moves will be highlighted in red
-- Complete the puzzle by filling all cells correctly
 
 ## Project Structure
 

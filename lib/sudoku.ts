@@ -33,7 +33,7 @@ export function checkCompletion(board: SudokuCell[][], solution: number[][]) {
   return isComplete;
 }
 
-export function generatePuzzle(difficulty: number = 0.5): {
+export function generatePuzzle(difficulty: number): {
   board: number[][];
   solution: number[][];
 } {
