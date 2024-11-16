@@ -12,8 +12,7 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 
 ## Roadmap
 
-- Count errors or don't highlight
-  - Could be 2 different modes?
+- 3 errors = game over
 - Toggle theme?
 - Stats
   - high scores
@@ -21,12 +20,9 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
   - Percentage of games completed
   - Best time
 
-  ## Tweaks
+## Tweaks
 
-  - blur cell when holding alt
   - click shouldnt add to history (or update game) if there is no change
-  - undo didnt replace notes
-  - board flicker on new game
 
 ## Tech Stack
 
