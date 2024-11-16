@@ -4,7 +4,7 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
 
 ## Features
 
-- Unique puzzle generation
+- 🔄 Unique puzzle generation
 - 🎯 Real-time move validation
 - 📝 Notes
 - ⌨️ Keyboard shortcuts for efficient gameplay
