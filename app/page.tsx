@@ -1,8 +1,9 @@
 "use client";
 
 import { SudokuProvider, useSudoku } from "@/context/sudoku-context";
-import { SudokuNumberBar } from "@/components/sudoku/number-bar";
 import { SudokuBoard } from "@/components/sudoku/board";
+import { SudokuTopBar } from "@/components/sudoku/top-bar";
+import { SudokuNumberBar } from "@/components/sudoku/number-bar";
 import { SudokuStartScreen } from "@/components/sudoku/start-screen";
 import { SudokuEndScreen } from "@/components/sudoku/end-screen";
 
@@ -15,7 +16,7 @@ export default function SudokuWrapper() {
 }
 
 function Sudoku() {
-  const { gameStatus, formattedTime } = useSudoku();
+  const { gameStatus } = useSudoku();
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
@@ -23,11 +24,9 @@ function Sudoku() {
         {gameStatus === "start" && <SudokuStartScreen />}
         {gameStatus === "playing" && (
           <>
+            <SudokuTopBar />
             <SudokuBoard />
             <SudokuNumberBar />
-            <div className="absolute top-2 right-2 font-bold text-lg text-muted-foreground">
-              {formattedTime}
-            </div>
           </>
         )}
         {gameStatus === "complete" && <SudokuEndScreen />}

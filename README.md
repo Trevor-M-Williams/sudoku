@@ -21,8 +21,10 @@ A modern, interactive Sudoku game built with Next.js, TypeScript, and Tailwind C
   - Best time
 
 ## Tweaks
-
-  - click shouldnt add to history (or update game) if there is no change
+- save current game to local storage
+- add top bar with difficulty and timer
+- selecting a number should add to history (if there is a change)
+- clicking on a cell shouldnt add to history if there is no change
 
 ## Tech Stack
 

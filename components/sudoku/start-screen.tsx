@@ -1,15 +1,19 @@
 import { useSudoku } from "@/context/sudoku-context";
 import { Button } from "@/components/ui/button";
-import { difficulties } from "@/lib/constants";
+import { difficultyOptions } from "@/lib/constants";
+import { HighScoresModal } from "./high-scores-modal";
 
 export function SudokuStartScreen() {
   const { setGameStatus, setDifficulty } = useSudoku();
 
   return (
     <div className="flex flex-col gap-2 w-full max-w-sm">
-      <div className="text-lg font-bold">Select Difficulty</div>
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-3xl font-bold">Sudoku</div>
+        <HighScoresModal />
+      </div>
 
-      {difficulties.map(({ label, value }, index) => (
+      {difficultyOptions.map(({ label, value }, index) => (
         <Button
           key={index}
           variant="outline"

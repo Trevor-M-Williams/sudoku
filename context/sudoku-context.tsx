@@ -16,7 +16,7 @@ import {
 import { SudokuCell } from "@/lib/types";
 import { formatTime } from "@/lib/utils";
 
-import { difficulties } from "@/lib/constants";
+import { difficultyOptions } from "@/lib/constants";
 
 import confetti from "canvas-confetti";
 
@@ -230,7 +230,8 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
       });
 
       const difficultyLabel =
-        difficulties.find((d) => d.value === difficulty)?.label || "Unknown";
+        difficultyOptions.find((d) => d.value === difficulty)?.label ||
+        "Unknown";
       const newScore: HighScore = {
         time: elapsedTime,
         date: new Date().toISOString(),
