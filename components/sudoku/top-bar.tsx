@@ -1,6 +1,8 @@
 import { useSudoku } from "@/context/sudoku-context";
 
 import { difficultyOptions } from "@/lib/constants";
+import { HelpModal } from "@/components/sudoku/help-modal";
+import { HighScoresModal } from "@/components/sudoku/high-scores-modal";
 
 export function SudokuTopBar() {
   const { formattedTime, difficulty } = useSudoku();
@@ -13,6 +15,11 @@ export function SudokuTopBar() {
       </div>
 
       <span className="font-mono text-lg">{formattedTime}</span>
+
+      <div className="flex gap-2">
+        <HelpModal />
+        <HighScoresModal />
+      </div>
     </div>
   );
 }
