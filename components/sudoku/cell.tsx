@@ -93,6 +93,7 @@ export function Cell({ cell }: { cell: SudokuCell }) {
         <div className="grid grid-cols-3 grid-rows-3 gap-0.5 p-0.5 w-full h-full text-[min(2.4vw,0.8rem)]">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <div
+              key={num}
               className={cn(
                 "w-full h-full flex items-center justify-center rounded-[2px]",
                 cell.notes.includes(num) &&
