@@ -67,6 +67,7 @@ export function Cell({ cell }: { cell: SudokuCell }) {
 
   return (
     <div
+      key={`${row}-${column}`}
       tabIndex={cell.isFixed ? -1 : 0}
       onKeyDown={(e) => handleCellChange(cell, e)}
       onClick={(e) => handleCellClick(cell, e)}

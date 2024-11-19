@@ -44,7 +44,7 @@ export function generatePuzzle(difficulty: number): {
 
   // Fill diagonal 3x3 boxes (these are independent)
   for (let i = 0; i < 9; i += 3) {
-    let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     for (let row = i; row < i + 3; row++) {
       for (let col = i; col < i + 3; col++) {
         const randomIndex = Math.floor(Math.random() * nums.length);
@@ -177,8 +177,8 @@ export function isValidMove(
   }
 
   // Check 3x3 box
-  let boxRow = Math.floor(row / 3) * 3;
-  let boxCol = Math.floor(col / 3) * 3;
+  const boxRow = Math.floor(row / 3) * 3;
+  const boxCol = Math.floor(col / 3) * 3;
 
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
