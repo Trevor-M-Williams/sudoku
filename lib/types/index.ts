@@ -7,3 +7,5 @@ export type SudokuCell = {
 };
 
 export type Difficulty = "Easy" | "Medium" | "Hard" | "Expert";
+
+export type GameStatus = "start" | "playing" | "complete";
