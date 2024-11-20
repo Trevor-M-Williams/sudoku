@@ -24,7 +24,7 @@ export function HighScoresModal() {
           <Trophy className="size-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md rounded">
         <DialogHeader>
           <DialogTitle>High Scores</DialogTitle>
         </DialogHeader>
