@@ -15,6 +15,8 @@ export function HighScoresModal() {
   const { highScores } = useSudoku();
   const [open, setOpen] = useState(false);
 
+  const difficultyOrder = ["Easy", "Medium", "Hard", "Expert"];
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -27,12 +29,12 @@ export function HighScoresModal() {
           <DialogTitle>High Scores</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          {Object.entries(highScores).map(([difficulty, scores]) => (
+          {difficultyOrder.map((difficulty) => (
             <div key={difficulty}>
               <h3 className="font-medium mb-2">{difficulty}</h3>
-              {scores.length > 0 ? (
+              {highScores[difficulty]?.length > 0 ? (
                 <ul className="space-y-1">
-                  {scores.map((score, index) => (
+                  {highScores[difficulty].map((score, index) => (
                     <li key={index} className="flex justify-between text-sm">
                       <span>{new Date(score.date).toLocaleDateString()}</span>
                       <span className="font-medium">

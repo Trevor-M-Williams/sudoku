@@ -1,10 +1,21 @@
 import { useSudoku } from "@/context/sudoku-context";
 import { Button } from "@/components/ui/button";
-import { difficultyOptions } from "@/lib/constants";
-import { HighScoresModal } from "./high-scores-modal";
+import { HighScoresModal } from "@/components/sudoku/high-scores-modal";
+import { Difficulty } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { formatTime } from "@/lib/utils";
+import { ClockIcon } from "lucide-react";
 
 export function SudokuStartScreen() {
-  const { setGameStatus, setDifficulty } = useSudoku();
+  const {
+    setGameStatus,
+    setDifficulty,
+    generateNewBoard,
+    savedGame,
+    resumeGame,
+  } = useSudoku();
+
+  const difficulties: Difficulty[] = ["Easy", "Medium", "Hard", "Expert"];
 
   return (
     <div className="flex flex-col gap-2 w-full max-w-sm">
@@ -13,19 +24,36 @@ export function SudokuStartScreen() {
         <HighScoresModal />
       </div>
 
-      {difficultyOptions.map(({ label, value }, index) => (
+      {difficulties.map((difficulty, index) => (
         <Button
           key={index}
           variant="outline"
           className="h-16 text-lg"
           onClick={() => {
-            setDifficulty(value);
+            setDifficulty(difficulty);
             setGameStatus("playing");
+            generateNewBoard(difficulty);
           }}
         >
-          {label}
+          {difficulty}
         </Button>
       ))}
+
+      <Button
+        className={cn(
+          "h-16 text-lg bg-blue-500 hover:bg-blue-600 flex flex-col gap-0",
+          savedGame ? "" : "opacity-0 pointer-events-none"
+        )}
+        onClick={resumeGame}
+      >
+        <span>Resume</span>
+        <div className="text-xs font-semibold flex items-center gap-1">
+          <ClockIcon style={{ width: "1em", height: "1em" }} />
+          <span>{formatTime(savedGame?.elapsedTime || 0)}</span>
+          <span>-</span>
+          <span>{savedGame?.difficulty}</span>
+        </div>
+      </Button>
     </div>
   );
 }

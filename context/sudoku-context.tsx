@@ -13,10 +13,8 @@ import {
   calculateRemainingNumbers,
   checkCompletion,
 } from "@/lib/sudoku";
-import { SudokuCell } from "@/lib/types";
+import { SudokuCell, Difficulty } from "@/lib/types";
 import { formatTime } from "@/lib/utils";
-
-import { difficultyOptions } from "@/lib/constants";
 
 import confetti from "canvas-confetti";
 
@@ -36,25 +34,37 @@ interface HighScores {
   [difficulty: string]: HighScore[];
 }
 
+interface SavedGameState {
+  board: SudokuCell[][];
+  solution: number[][];
+  gameStatus: GameStatus;
+  difficulty: Difficulty;
+  elapsedTime: number;
+  selectedValue: number | null;
+}
+
 interface SudokuContextType {
   gameStatus: GameStatus;
   board: SudokuCell[][];
   solution: number[][];
   selectedValue: number | null;
   remainingNumbers: Record<number, number>;
-  difficulty: number;
+  difficulty: Difficulty;
   canUndo: boolean;
   canRedo: boolean;
   elapsedTime: number;
   formattedTime: string;
   highScores: HighScores;
+  savedGame: SavedGameState | null;
+  resumeGame: () => void;
   undo: () => void;
   redo: () => void;
   setGameStatus: (status: GameStatus) => void;
   setSelectedValue: (value: number | null) => void;
-  setDifficulty: (difficulty: number) => void;
-  generateNewBoard: () => void;
+  setDifficulty: (difficulty: Difficulty) => void;
+  generateNewBoard: (difficulty: Difficulty) => void;
   updateGame: (updatedCell: SudokuCell) => void;
+  updateSavedGame: () => void;
 }
 
 const SudokuContext = createContext<SudokuContextType | undefined>(undefined);
@@ -64,11 +74,13 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   const [board, setBoard] = useState<SudokuCell[][]>([]);
   const [solution, setSolution] = useState<number[][]>([]);
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
-  const [difficulty, setDifficulty] = useState(0.5);
+  const [difficulty, setDifficulty] = useState<Difficulty>("Medium");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [highScores, setHighScores] = useState<HighScores>({});
+
+  const [savedGame, setSavedGame] = useState<SavedGameState | null>(null);
 
   useEffect(() => {
     const savedScores = localStorage.getItem("sudokuHighScores");
@@ -77,8 +89,19 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // TODO move logic to lib
-  function generateNewBoard() {
+  useEffect(() => {
+    const savedGame = localStorage.getItem("sudokuGameState");
+    if (savedGame) {
+      const parsedGame: SavedGameState = JSON.parse(savedGame);
+      setSavedGame(parsedGame);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateSavedGame();
+  }, [board, solution, gameStatus, difficulty, elapsedTime, selectedValue]);
+
+  function generateNewBoard(difficulty: Difficulty) {
     const { board, solution } = generatePuzzle(difficulty);
     setSolution(solution);
 
@@ -95,11 +118,42 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     setHistory([{ board: initialBoard, selectedValue: null }]);
     setCurrentHistoryIndex(0);
     setElapsedTime(0);
+    localStorage.removeItem("sudokuGameState");
   }
 
-  // TODO move logic to lib
+  function resumeGame() {
+    if (!savedGame) return;
+    setGameStatus("playing");
+    setBoard(savedGame.board);
+    setDifficulty(savedGame.difficulty);
+    setSolution(savedGame.solution);
+    setSelectedValue(savedGame.selectedValue);
+    setElapsedTime(savedGame.elapsedTime);
+    setHistory([
+      { board: savedGame.board, selectedValue: savedGame.selectedValue },
+    ]);
+    setCurrentHistoryIndex(0);
+  }
+
+  function updateSavedGame() {
+    if (gameStatus === "playing") {
+      const gameState: SavedGameState = {
+        board,
+        solution,
+        gameStatus,
+        difficulty,
+        elapsedTime,
+        selectedValue,
+      };
+      localStorage.setItem("sudokuGameState", JSON.stringify(gameState));
+      setSavedGame(gameState);
+    } else if (gameStatus === "complete") {
+      localStorage.removeItem("sudokuGameState");
+      setSavedGame(null);
+    }
+  }
+
   function updateGame(updatedCell: SudokuCell) {
-    // Create a deep copy of the board first
     const newBoard = board.map((row) =>
       row.map((cell) => ({
         ...cell,
@@ -107,13 +161,11 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
       }))
     );
 
-    // Update the cell
     newBoard[updatedCell.row][updatedCell.column] = {
       ...updatedCell,
       notes: [...updatedCell.notes],
     };
 
-    // Clear notes when a value is placed
     if (updatedCell.value !== null) {
       const squareStartRow = Math.floor(updatedCell.row / 3) * 3;
       const squareStartCol = Math.floor(updatedCell.column / 3) * 3;
@@ -132,7 +184,6 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
             colIndex < squareStartCol + 3;
 
           if (isInSameRow || isInSameCol || isInSameSquare) {
-            // Create a new cell object with filtered notes
             newBoard[rowIndex][colIndex] = {
               ...cell,
               notes: cell.notes.filter((note) => note !== updatedCell.value),
@@ -204,12 +255,6 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   }, [currentHistoryIndex, history]);
 
   useEffect(() => {
-    if (gameStatus === "playing") {
-      generateNewBoard();
-    }
-  }, [gameStatus]);
-
-  useEffect(() => {
     if (gameStatus === "complete") {
       const screenWidth = window.innerWidth;
 
@@ -229,9 +274,6 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
         origin: { x: 1.2, y: 0.1 },
       });
 
-      const difficultyLabel =
-        difficultyOptions.find((d) => d.value === difficulty)?.label ||
-        "Unknown";
       const newScore: HighScore = {
         time: elapsedTime,
         date: new Date().toISOString(),
@@ -239,16 +281,14 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
 
       setHighScores((prevScores) => {
         const updatedScores = { ...prevScores };
-        const difficultyScores = updatedScores[difficultyLabel] || [];
+        const difficultyScores = updatedScores[difficulty] || [];
 
-        // Add new score and sort by time (ascending)
         const newScores = [...difficultyScores, newScore]
           .sort((a, b) => a.time - b.time)
-          .slice(0, 5); // Keep only top 5 scores
+          .slice(0, 5);
 
-        updatedScores[difficultyLabel] = newScores;
+        updatedScores[difficulty] = newScores;
 
-        // Save to localStorage
         localStorage.setItem("sudokuHighScores", JSON.stringify(updatedScores));
 
         return updatedScores;
@@ -257,7 +297,6 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   }, [gameStatus]);
 
   useEffect(() => {
-    // Meta key + number to select a number
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && /^[1-9]$/.test(e.key)) {
         e.preventDefault();
@@ -319,6 +358,8 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     elapsedTime,
     formattedTime: formatTime(elapsedTime),
     highScores,
+    savedGame,
+    resumeGame,
     undo,
     redo,
     setGameStatus,
@@ -326,6 +367,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     setDifficulty,
     generateNewBoard,
     updateGame,
+    updateSavedGame,
   };
 
   return (

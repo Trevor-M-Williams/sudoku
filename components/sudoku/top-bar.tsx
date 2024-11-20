@@ -1,17 +1,29 @@
 import { useSudoku } from "@/context/sudoku-context";
 
-import { difficultyOptions } from "@/lib/constants";
 import { HelpModal } from "@/components/sudoku/help-modal";
 import { HighScoresModal } from "@/components/sudoku/high-scores-modal";
+import { Button } from "../ui/button";
+import { ArrowLeftIcon } from "lucide-react";
 
 export function SudokuTopBar() {
-  const { formattedTime, difficulty } = useSudoku();
+  const { formattedTime, difficulty, setGameStatus, updateSavedGame } =
+    useSudoku();
 
   return (
     <div className="w-full flex items-center justify-between">
-      <div>
-        Difficulty:{" "}
-        {difficultyOptions.find((option) => option.value === difficulty)?.label}
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          className="px-3 py-1 rounded"
+          onClick={() => {
+            setGameStatus("start");
+            updateSavedGame();
+          }}
+        >
+          <ArrowLeftIcon className="w-4 h-4" />
+        </Button>
+        <div>Difficulty: {difficulty}</div>
       </div>
 
       <span className="font-mono text-lg">{formattedTime}</span>

@@ -5,3 +5,5 @@ export type SudokuCell = {
   column: number;
   notes: number[];
 };
+
+export type Difficulty = "Easy" | "Medium" | "Hard" | "Expert";

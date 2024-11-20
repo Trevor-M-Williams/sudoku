@@ -1,4 +1,4 @@
-import { SudokuCell } from "./types";
+import { SudokuCell, Difficulty } from "./types";
 
 export const calculateRemainingNumbers = (
   board: SudokuCell[][],
@@ -33,7 +33,7 @@ export function checkCompletion(board: SudokuCell[][], solution: number[][]) {
   return isComplete;
 }
 
-export function generatePuzzle(difficulty: number): {
+export function generatePuzzle(difficulty: Difficulty): {
   board: number[][];
   solution: number[][];
 } {
@@ -74,8 +74,14 @@ export function generatePuzzle(difficulty: number): {
     [positions[i], positions[j]] = [positions[j], positions[i]];
   }
 
+  const difficultyMultipliers = {
+    Easy: 0.3,
+    Medium: 0.5,
+    Hard: 0.7,
+    Expert: 999,
+  } as const;
   // Calculate how many cells to remove based on difficulty
-  const cellsToRemove = Math.floor(81 * difficulty);
+  const cellsToRemove = Math.floor(81 * difficultyMultipliers[difficulty]);
   let removed = 0;
 
   // Try removing numbers while ensuring uniqueness
