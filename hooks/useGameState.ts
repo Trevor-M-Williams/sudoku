@@ -2,14 +2,6 @@ import { useState, useCallback } from "react";
 import { SudokuCell, Difficulty, GameStatus } from "@/lib/types";
 import { generatePuzzle, checkCompletion } from "@/lib/sudoku";
 
-interface GameState {
-  board: SudokuCell[][];
-  solution: number[][];
-  gameStatus: GameStatus;
-  difficulty: Difficulty;
-  selectedValue: number | null;
-}
-
 export function useGameState(
   initializeHistory: (board: SudokuCell[][]) => void
 ) {

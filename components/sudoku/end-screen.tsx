@@ -2,7 +2,7 @@ import { useSudoku } from "@/context/sudoku-context";
 import { formatTime } from "@/lib/utils";
 
 export function SudokuEndScreen() {
-  const { setGameStatus, formattedTime, difficulty, highScores, elapsedTime } =
+  const { formattedTime, difficulty, highScores, elapsedTime, resetGame } =
     useSudoku();
 
   const difficultyHighScores = highScores[difficulty] || [];
@@ -22,7 +22,7 @@ export function SudokuEndScreen() {
       )}
       <button
         className="bg-blue-500 text-white px-4 py-2 rounded-md"
-        onClick={() => setGameStatus("start")}
+        onClick={resetGame}
       >
         New Puzzle
       </button>

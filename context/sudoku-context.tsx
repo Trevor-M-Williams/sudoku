@@ -59,6 +59,8 @@ interface SudokuContextType {
   generateNewBoard: (difficulty: Difficulty) => void;
   updateGame: (updatedCell: SudokuCell) => void;
   updateSavedGame: (gameState: SavedGameState) => void;
+  resetGame: () => void;
+  setTime: (time: number) => void;
 }
 
 const SudokuContext = createContext<SudokuContextType | undefined>(undefined);
@@ -82,12 +84,13 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     generateNewBoard,
     updateBoard,
     setSolution,
+    resetGame,
   } = useGameState(initializeHistory);
-
-  const [highScores, setHighScores] = useState<HighScores>({});
 
   const { savedGame, updateSavedGame } = useSavedGame();
   const { elapsedTime, setTime } = useTimer(gameStatus);
+
+  const [highScores, setHighScores] = useState<HighScores>({});
 
   useEffect(() => {
     const savedScores = localStorage.getItem("sudokuHighScores");
@@ -212,6 +215,8 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     generateNewBoard,
     updateGame,
     updateSavedGame,
+    resetGame,
+    setTime,
   };
 
   return (

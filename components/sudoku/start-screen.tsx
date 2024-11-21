@@ -13,6 +13,7 @@ export function SudokuStartScreen() {
     generateNewBoard,
     savedGame,
     resumeGame,
+    setTime,
   } = useSudoku();
 
   const difficulties: Difficulty[] = ["Easy", "Medium", "Hard", "Expert"];
@@ -33,6 +34,7 @@ export function SudokuStartScreen() {
             setDifficulty(difficulty);
             setGameStatus("playing");
             generateNewBoard(difficulty);
+            setTime(0);
           }}
         >
           {difficulty}
