@@ -18,7 +18,6 @@ export function SudokuTopBar() {
           className="px-3 py-1 rounded"
           onClick={() => {
             setGameStatus("start");
-            updateSavedGame();
           }}
         >
           <ArrowLeftIcon className="w-4 h-4" />
