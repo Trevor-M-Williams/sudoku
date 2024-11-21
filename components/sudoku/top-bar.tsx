@@ -6,8 +6,7 @@ import { Button } from "../ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 
 export function SudokuTopBar() {
-  const { formattedTime, difficulty, setGameStatus, updateSavedGame } =
-    useSudoku();
+  const { formattedTime, difficulty, setGameStatus } = useSudoku();
 
   return (
     <div className="w-full flex items-center justify-between">
