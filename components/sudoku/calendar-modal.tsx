@@ -35,7 +35,7 @@ export function CalendarModal() {
         <DialogHeader>
           <DialogTitle>Select a daily puzzle</DialogTitle>
         </DialogHeader>
-        <div className="flex items-center justify-center">
+        <div className="flex justify-center min-h-[21rem]">
           <Calendar
             mode="single"
             selected={date}
@@ -43,7 +43,7 @@ export function CalendarModal() {
               setDate(date);
               handleSelect(date);
             }}
-            disabled={{ after: new Date() }}
+            disabled={{ before: new Date("2024-1-1"), after: new Date() }}
             initialFocus
           />
         </div>

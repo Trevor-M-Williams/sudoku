@@ -8,7 +8,7 @@ import { ClockIcon } from "lucide-react";
 import { CalendarModal } from "@/components/sudoku/calendar-modal";
 
 export function SudokuStartScreen() {
-  const { savedGame, startGame, resumeGame, setTime } = useSudoku();
+  const { savedGame, startGame, resumeGame } = useSudoku();
 
   const difficulties: Difficulty[] = ["Easy", "Medium", "Hard", "Expert"];
 

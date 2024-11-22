@@ -1,6 +1,4 @@
 import { useSudoku } from "@/context/sudoku-context";
-import { Button } from "@/components/ui/button";
-import { SaveIcon } from "lucide-react";
 
 export function ToggleCompleteButton() {
   const { gameStatus, setGameStatus } = useSudoku();

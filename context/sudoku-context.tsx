@@ -50,7 +50,6 @@ interface SudokuContextType {
   updateGame: (updatedCell: SudokuCell) => void;
   updateSavedGame: (gameState: SavedGameState) => void;
   resetGame: () => void;
-  setTime: (time: number) => void;
 }
 
 const SudokuContext = createContext<SudokuContextType | undefined>(undefined);
@@ -213,7 +212,6 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     updateGame,
     updateSavedGame,
     resetGame,
-    setTime,
   };
 
   return (
