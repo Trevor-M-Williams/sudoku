@@ -33,10 +33,7 @@ export function checkCompletion(board: SudokuCell[][], solution: number[][]) {
   return isComplete;
 }
 
-export function generatePuzzle(difficulty: Difficulty): {
-  board: number[][];
-  solution: number[][];
-} {
+export function generatePuzzle(difficulty: Difficulty) {
   // Create empty board
   const board: number[][] = Array(9)
     .fill(0)
@@ -99,7 +96,11 @@ export function generatePuzzle(difficulty: Difficulty): {
     }
   }
 
-  return { board, solution };
+  // Convert boards to strings
+  const boardString = board.map((row) => row.join("")).join("");
+  const solutionString = solution.map((row) => row.join("")).join("");
+
+  return { boardString, solutionString };
 }
 
 // Helper function to check if a puzzle has a unique solution

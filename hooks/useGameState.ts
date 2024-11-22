@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { SudokuCell, Difficulty, GameStatus } from "@/lib/types";
 import { generatePuzzle, checkCompletion } from "@/lib/sudoku";
 
@@ -10,27 +10,60 @@ export function useGameState(
   const [solution, setSolution] = useState<number[][]>([]);
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const [difficulty, setDifficulty] = useState<Difficulty>("Medium");
+  const [elapsedTime, setElapsedTime] = useState(0);
 
-  const generateNewBoard = useCallback(
-    (difficulty: Difficulty) => {
-      const { board, solution } = generatePuzzle(difficulty);
-      setSolution(solution);
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
 
-      const initialBoard: SudokuCell[][] = board.map((row, rowIndex) =>
-        row.map((value, colIndex) => ({
-          value: value === 0 ? null : value,
-          isFixed: value !== 0,
-          row: rowIndex,
-          column: colIndex,
-          notes: [],
-        }))
-      );
-      setBoard(initialBoard);
-      initializeHistory(initialBoard);
-      localStorage.removeItem("sudokuGameState");
-    },
-    [initializeHistory]
-  );
+    if (gameStatus === "playing") {
+      intervalId = setInterval(() => {
+        setElapsedTime((prev) => prev + 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [gameStatus]);
+
+  const setTime = (time: number) => setElapsedTime(time);
+
+  const startGame = (
+    difficulty: Difficulty,
+    boardString?: string,
+    solutionString?: string
+  ) => {
+    let board, solution;
+    if (!boardString || !solutionString) {
+      const { boardString, solutionString } = generatePuzzle(difficulty);
+      board = convertStringToSudokuArray(boardString);
+      solution = convertStringToSudokuArray(solutionString);
+    } else {
+      board = convertStringToSudokuArray(boardString);
+      solution = convertStringToSudokuArray(solutionString);
+    }
+
+    setSolution(solution);
+
+    const initialBoard: SudokuCell[][] = board.map((row, rowIndex) =>
+      row.map((value, colIndex) => ({
+        value: value === 0 ? null : value,
+        isFixed: value !== 0,
+        row: rowIndex,
+        column: colIndex,
+        notes: [],
+      }))
+    );
+
+    setTime(0);
+    setBoard(initialBoard);
+    setDifficulty(difficulty);
+    setGameStatus("playing");
+    initializeHistory(initialBoard);
+    localStorage.removeItem("sudokuGameState");
+  };
 
   const updateBoard = useCallback(
     (updatedCell: SudokuCell) => {
@@ -104,14 +137,28 @@ export function useGameState(
       gameStatus,
       difficulty,
       selectedValue,
+      elapsedTime,
     },
     setBoard,
     setSolution,
     setGameStatus,
     setSelectedValue,
     setDifficulty,
-    generateNewBoard,
+    startGame,
     updateBoard,
     resetGame,
+    setTime,
   };
+}
+
+function convertStringToSudokuArray(rawString: string) {
+  const sudokuArray = Array(9)
+    .fill(null)
+    .map((_, i) =>
+      Array(9)
+        .fill(null)
+        .map((_, j) => parseInt(rawString[i * 9 + j]))
+    );
+
+  return sudokuArray;
 }

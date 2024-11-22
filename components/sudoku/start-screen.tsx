@@ -5,16 +5,10 @@ import { Difficulty } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/lib/utils";
 import { ClockIcon } from "lucide-react";
+import { CalendarModal } from "@/components/sudoku/calendar-modal";
 
 export function SudokuStartScreen() {
-  const {
-    setGameStatus,
-    setDifficulty,
-    generateNewBoard,
-    savedGame,
-    resumeGame,
-    setTime,
-  } = useSudoku();
+  const { savedGame, startGame, resumeGame, setTime } = useSudoku();
 
   const difficulties: Difficulty[] = ["Easy", "Medium", "Hard", "Expert"];
 
@@ -22,7 +16,10 @@ export function SudokuStartScreen() {
     <div className="flex flex-col gap-2 w-full max-w-sm">
       <div className="flex justify-between items-center mb-4">
         <div className="text-3xl font-bold">Sudoku</div>
-        <HighScoresModal />
+        <div className="flex gap-2">
+          <HighScoresModal />
+          <CalendarModal />
+        </div>
       </div>
 
       {difficulties.map((difficulty, index) => (
@@ -31,10 +28,7 @@ export function SudokuStartScreen() {
           variant="outline"
           className="h-16 text-lg"
           onClick={() => {
-            setDifficulty(difficulty);
-            setGameStatus("playing");
-            generateNewBoard(difficulty);
-            setTime(0);
+            startGame(difficulty);
           }}
         >
           {difficulty}

@@ -7,35 +7,21 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { calculateRemainingNumbers } from "@/lib/sudoku";
-import { SudokuCell, Difficulty } from "@/lib/types";
-import { formatTime } from "@/lib/utils";
-import { useTimer } from "@/hooks/useTimer";
+import { useGameState } from "@/hooks/useGameState";
 import { useHistory } from "@/hooks/useHistory";
 import { useSavedGame } from "@/hooks/useSavedGame";
 import { useKeyboardControls } from "@/hooks/useKeyboardControls";
-import { useGameState } from "@/hooks/useGameState";
+import { calculateRemainingNumbers } from "@/lib/sudoku";
+import { formatTime } from "@/lib/utils";
+import {
+  SudokuCell,
+  Difficulty,
+  GameStatus,
+  HighScore,
+  HighScores,
+  SavedGameState,
+} from "@/lib/types";
 import confetti from "canvas-confetti";
-
-type GameStatus = "start" | "playing" | "complete";
-
-interface HighScore {
-  time: number;
-  date: string;
-}
-
-interface HighScores {
-  [difficulty: string]: HighScore[];
-}
-
-interface SavedGameState {
-  board: SudokuCell[][];
-  solution: number[][];
-  gameStatus: GameStatus;
-  difficulty: Difficulty;
-  elapsedTime: number;
-  selectedValue: number | null;
-}
 
 interface SudokuContextType {
   gameStatus: GameStatus;
@@ -56,7 +42,11 @@ interface SudokuContextType {
   setGameStatus: (status: GameStatus) => void;
   setSelectedValue: (value: number | null) => void;
   setDifficulty: (difficulty: Difficulty) => void;
-  generateNewBoard: (difficulty: Difficulty) => void;
+  startGame: (
+    difficulty: Difficulty,
+    boardString?: string,
+    solutionString?: string
+  ) => void;
   updateGame: (updatedCell: SudokuCell) => void;
   updateSavedGame: (gameState: SavedGameState) => void;
   resetGame: () => void;
@@ -76,19 +66,26 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   } = useHistory();
 
   const {
-    gameState: { board, solution, gameStatus, difficulty, selectedValue },
+    gameState: {
+      board,
+      solution,
+      gameStatus,
+      difficulty,
+      selectedValue,
+      elapsedTime,
+    },
     setBoard,
     setGameStatus,
     setSelectedValue,
     setDifficulty,
-    generateNewBoard,
+    startGame,
     updateBoard,
     setSolution,
     resetGame,
+    setTime,
   } = useGameState(initializeHistory);
 
   const { savedGame, updateSavedGame } = useSavedGame();
-  const { elapsedTime, setTime } = useTimer(gameStatus);
 
   const [highScores, setHighScores] = useState<HighScores>({});
 
@@ -212,7 +209,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     setGameStatus,
     setSelectedValue,
     setDifficulty,
-    generateNewBoard,
+    startGame,
     updateGame,
     updateSavedGame,
     resetGame,
