@@ -12,6 +12,7 @@
     "generate-daily": "tsx scripts/generate-daily-puzzle.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.5.0",
     "@next/env": "^15.0.3",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
