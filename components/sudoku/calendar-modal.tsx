@@ -14,14 +14,17 @@ import { CalendarIcon } from "lucide-react";
 
 export function CalendarModal() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const { startGame } = useSudoku();
+  const { startGame, setDailyPuzzleId } = useSudoku();
 
   async function handleSelect(date: Date | undefined) {
     if (!date) return;
 
     const formattedDate = date.toISOString().split("T")[0];
-    const { difficulty, board, solution } = await getDailyPuzzle(formattedDate);
+    const { id, difficulty, board, solution } = await getDailyPuzzle(
+      formattedDate
+    );
     startGame(difficulty, board, solution);
+    setDailyPuzzleId(id.toString());
   }
 
   return (

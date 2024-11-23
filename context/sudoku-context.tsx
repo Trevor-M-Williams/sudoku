@@ -17,11 +17,10 @@ import {
   SudokuCell,
   Difficulty,
   GameStatus,
-  HighScore,
-  HighScores,
   SavedGameState,
 } from "@/lib/types";
 import confetti from "canvas-confetti";
+import { saveDailyPuzzleScore } from "@/actions/puzzles";
 
 interface SudokuContextType {
   gameStatus: GameStatus;
@@ -30,11 +29,11 @@ interface SudokuContextType {
   selectedValue: number | null;
   remainingNumbers: Record<number, number>;
   difficulty: Difficulty;
+  dailyPuzzleId: string | null;
   canUndo: boolean;
   canRedo: boolean;
   elapsedTime: number;
   formattedTime: string;
-  highScores: HighScores;
   savedGame: SavedGameState | null;
   resumeGame: () => void;
   undo: () => void;
@@ -42,6 +41,7 @@ interface SudokuContextType {
   setGameStatus: (status: GameStatus) => void;
   setSelectedValue: (value: number | null) => void;
   setDifficulty: (difficulty: Difficulty) => void;
+  setDailyPuzzleId: (id: string) => void;
   startGame: (
     difficulty: Difficulty,
     boardString?: string,
@@ -72,11 +72,13 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
       difficulty,
       selectedValue,
       elapsedTime,
+      dailyPuzzleId,
     },
     setBoard,
     setGameStatus,
     setSelectedValue,
     setDifficulty,
+    setDailyPuzzleId,
     startGame,
     updateBoard,
     setSolution,
@@ -86,14 +88,21 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
 
   const { savedGame, updateSavedGame } = useSavedGame();
 
-  const [highScores, setHighScores] = useState<HighScores>({});
+  async function handleGameComplete() {
+    if (!dailyPuzzleId) return;
 
-  useEffect(() => {
-    const savedScores = localStorage.getItem("sudokuHighScores");
-    if (savedScores) {
-      setHighScores(JSON.parse(savedScores));
+    shootConfetti();
+
+    if (dailyPuzzleId) {
+      const { error, message } = await saveDailyPuzzleScore(
+        dailyPuzzleId,
+        elapsedTime
+      );
+      if (error) {
+        console.error(message);
+      }
     }
-  }, []);
+  }
 
   useEffect(() => {
     updateSavedGame({
@@ -140,43 +149,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (gameStatus === "complete") {
-      const screenWidth = window.innerWidth;
-
-      confetti({
-        startVelocity: screenWidth * 0.05,
-        angle: 0,
-        spread: 55,
-        particleCount: 100,
-        origin: { x: -0.2, y: 0.1 },
-      });
-
-      confetti({
-        startVelocity: screenWidth * 0.05,
-        angle: 180,
-        spread: 55,
-        particleCount: 100,
-        origin: { x: 1.2, y: 0.1 },
-      });
-
-      const newScore: HighScore = {
-        time: elapsedTime,
-        date: new Date().toISOString(),
-      };
-
-      setHighScores((prevScores) => {
-        const updatedScores = { ...prevScores };
-        const difficultyScores = updatedScores[difficulty] || [];
-
-        const newScores = [...difficultyScores, newScore]
-          .sort((a, b) => a.time - b.time)
-          .slice(0, 5);
-
-        updatedScores[difficulty] = newScores;
-
-        localStorage.setItem("sudokuHighScores", JSON.stringify(updatedScores));
-
-        return updatedScores;
-      });
+      handleGameComplete();
     }
   }, [gameStatus]);
 
@@ -196,11 +169,11 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     selectedValue,
     remainingNumbers,
     difficulty,
+    dailyPuzzleId,
     canUndo,
     canRedo,
     elapsedTime,
     formattedTime: formatTime(elapsedTime),
-    highScores,
     savedGame,
     resumeGame,
     undo,
@@ -208,6 +181,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     setGameStatus,
     setSelectedValue,
     setDifficulty,
+    setDailyPuzzleId,
     startGame,
     updateGame,
     updateSavedGame,
@@ -225,4 +199,24 @@ export function useSudoku() {
     throw new Error("useSudoku must be used within a SudokuProvider");
   }
   return context;
+}
+
+function shootConfetti() {
+  const screenWidth = window.innerWidth;
+
+  confetti({
+    startVelocity: screenWidth * 0.05,
+    angle: 0,
+    spread: 55,
+    particleCount: 100,
+    origin: { x: -0.2, y: 0.1 },
+  });
+
+  confetti({
+    startVelocity: screenWidth * 0.05,
+    angle: 180,
+    spread: 55,
+    particleCount: 100,
+    origin: { x: 1.2, y: 0.1 },
+  });
 }

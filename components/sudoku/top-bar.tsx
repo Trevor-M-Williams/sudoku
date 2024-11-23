@@ -1,7 +1,6 @@
 import { useSudoku } from "@/context/sudoku-context";
 
 import { HelpModal } from "@/components/sudoku/help-modal";
-import { HighScoresModal } from "@/components/sudoku/high-scores-modal";
 import { Button } from "../ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 
@@ -28,7 +27,6 @@ export function SudokuTopBar() {
 
       <div className="flex gap-2">
         <HelpModal />
-        <HighScoresModal />
       </div>
     </div>
   );

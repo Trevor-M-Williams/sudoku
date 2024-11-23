@@ -11,6 +11,7 @@ export function useGameState(
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const [difficulty, setDifficulty] = useState<Difficulty>("Medium");
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [dailyPuzzleId, setDailyPuzzleId] = useState<string | null>(null);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -138,12 +139,14 @@ export function useGameState(
       difficulty,
       selectedValue,
       elapsedTime,
+      dailyPuzzleId,
     },
     setBoard,
     setSolution,
     setGameStatus,
     setSelectedValue,
     setDifficulty,
+    setDailyPuzzleId,
     startGame,
     updateBoard,
     resetGame,

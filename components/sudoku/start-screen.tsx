@@ -1,6 +1,5 @@
 import { useSudoku } from "@/context/sudoku-context";
 import { Button } from "@/components/ui/button";
-import { HighScoresModal } from "@/components/sudoku/high-scores-modal";
 import { Difficulty } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/lib/utils";
@@ -17,7 +16,6 @@ export function SudokuStartScreen() {
       <div className="flex justify-between items-center mb-4">
         <div className="text-3xl font-bold">Sudoku</div>
         <div className="flex gap-2">
-          <HighScoresModal />
           <CalendarModal />
         </div>
       </div>
