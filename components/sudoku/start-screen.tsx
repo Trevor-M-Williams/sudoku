@@ -35,7 +35,7 @@ export function SudokuStartScreen() {
 
       <Button
         className={cn(
-          "h-16 text-lg bg-blue-500 hover:bg-blue-600 flex flex-col gap-0",
+          "h-16 text-lg flex flex-col gap-0",
           savedGame ? "" : "opacity-0 pointer-events-none"
         )}
         onClick={resumeGame}

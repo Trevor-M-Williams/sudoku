@@ -18,3 +18,11 @@ export type SavedGameState = {
   elapsedTime: number;
   selectedValue: number | null;
 };
+
+export type DailyPuzzleScore = {
+  id: number;
+  puzzleId: number;
+  time: number;
+  date: string;
+  createdAt: Date;
+};

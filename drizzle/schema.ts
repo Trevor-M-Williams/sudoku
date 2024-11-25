@@ -20,7 +20,12 @@ export const DailyPuzzles = pgTable("daily_puzzles", {
 export const DailyPuzzleScores = pgTable("daily_puzzle_scores", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),
-  puzzleId: text("puzzle_id").notNull(),
+  puzzleId: integer("puzzle_id")
+    .notNull()
+    .references(() => DailyPuzzles.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   time: integer("time").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

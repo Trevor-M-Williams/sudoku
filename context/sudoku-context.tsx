@@ -3,7 +3,6 @@
 import React, {
   createContext,
   useContext,
-  useState,
   useEffect,
   useCallback,
 } from "react";
@@ -18,6 +17,7 @@ import {
   Difficulty,
   GameStatus,
   SavedGameState,
+  DailyPuzzleScore,
 } from "@/lib/types";
 import confetti from "canvas-confetti";
 import { saveDailyPuzzleScore } from "@/actions/puzzles";
@@ -29,7 +29,7 @@ interface SudokuContextType {
   selectedValue: number | null;
   remainingNumbers: Record<number, number>;
   difficulty: Difficulty;
-  dailyPuzzleId: string | null;
+  dailyPuzzleId: number | null;
   canUndo: boolean;
   canRedo: boolean;
   elapsedTime: number;
@@ -41,7 +41,7 @@ interface SudokuContextType {
   setGameStatus: (status: GameStatus) => void;
   setSelectedValue: (value: number | null) => void;
   setDifficulty: (difficulty: Difficulty) => void;
-  setDailyPuzzleId: (id: string) => void;
+  setDailyPuzzleId: (id: number) => void;
   startGame: (
     difficulty: Difficulty,
     boardString?: string,
@@ -65,15 +65,13 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   } = useHistory();
 
   const {
-    gameState: {
-      board,
-      solution,
-      gameStatus,
-      difficulty,
-      selectedValue,
-      elapsedTime,
-      dailyPuzzleId,
-    },
+    board,
+    solution,
+    gameStatus,
+    difficulty,
+    selectedValue,
+    elapsedTime,
+    dailyPuzzleId,
     setBoard,
     setGameStatus,
     setSelectedValue,
