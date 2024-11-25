@@ -14,7 +14,7 @@ import {
   getPuzzleScores,
 } from "@/actions/puzzles";
 import { useSudoku } from "@/context/sudoku-context";
-import { CalendarIcon, XIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { DailyPuzzleScore } from "@/lib/types";
 
 type TopScore = {
@@ -42,7 +42,8 @@ export function CalendarModal() {
     if (!date) return;
 
     const completedPuzzle = puzzles.find(
-      (puzzle) => new Date(puzzle.date).toDateString() === date.toDateString()
+      (puzzle) =>
+        createUTCDate(puzzle.date).toDateString() === date.toDateString()
     );
 
     if (completedPuzzle) {
@@ -64,10 +65,12 @@ export function CalendarModal() {
     setDailyPuzzleId(id);
   }
 
-  const completedDates = puzzles.map((puzzle) => new Date(puzzle.date));
+  const completedDates = puzzles.map((puzzle) => {
+    return createUTCDate(puzzle.date);
+  });
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setTopScores([])}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon">
           <CalendarIcon />
@@ -77,7 +80,7 @@ export function CalendarModal() {
         <DialogHeader>
           <DialogTitle>
             {topScores.length > 0
-              ? `Top Scores - ${date?.toLocaleDateString()}`
+              ? date?.toDateString()
               : "Select a daily puzzle"}
           </DialogTitle>
         </DialogHeader>
@@ -116,6 +119,7 @@ export function CalendarModal() {
                 completed: {
                   backgroundColor: "#0af",
                   color: "white",
+                  borderRadius: "0px",
                 },
               }}
               initialFocus
@@ -125,4 +129,9 @@ export function CalendarModal() {
       </DialogContent>
     </Dialog>
   );
+}
+
+function createUTCDate(dateString: string): Date {
+  // I've been fighting the Date api for far too long. Take it or leave it.
+  return new Date(`${dateString}T12:00:00Z`);
 }
