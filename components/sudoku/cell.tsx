@@ -83,7 +83,6 @@ export function Cell({ cell }: { cell: SudokuCell }) {
           "text-red-500",
         column % 3 === 2 && column !== 8 && "border-r-2 border-r-gray-400",
         row % 3 === 2 && row !== 8 && "border-b-2 border-b-gray-400",
-        // "focus:outline-none focus:border-blue-400"
         "focus:outline-none focus:bg-blue-200"
       )}
     >
