@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { addUser } from "@/actions/users";
+import { addUser } from "@/actions/sudoku";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSudoku } from "@/context/sudoku-context";

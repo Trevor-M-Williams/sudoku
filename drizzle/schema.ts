@@ -27,6 +27,8 @@ export const DailyPuzzleScores = pgTable("daily_puzzle_scores", {
       onUpdate: "cascade",
     }),
   time: integer("time").notNull(),
+  score: integer("score").notNull(),
+  errorCount: integer("error_count").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

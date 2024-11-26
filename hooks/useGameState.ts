@@ -12,6 +12,7 @@ export function useGameState(
   const [difficulty, setDifficulty] = useState<Difficulty>("Medium");
   const [elapsedTime, setElapsedTime] = useState(0);
   const [dailyPuzzleId, setDailyPuzzleId] = useState<number | null>(null);
+  const [errorCount, setErrorCount] = useState(0);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -59,6 +60,7 @@ export function useGameState(
     );
 
     setTime(0);
+    setErrorCount(0);
     setBoard(initialBoard);
     setDifficulty(difficulty);
     setGameStatus("playing");
@@ -68,6 +70,13 @@ export function useGameState(
 
   const updateBoard = useCallback(
     (updatedCell: SudokuCell) => {
+      if (updatedCell.value !== null) {
+        const correctValue = solution[updatedCell.row][updatedCell.column];
+        if (updatedCell.value !== correctValue) {
+          setErrorCount((prev) => prev + 1);
+        }
+      }
+
       const newBoard = board.map((row) =>
         row.map((cell) => ({
           ...cell,
@@ -139,6 +148,7 @@ export function useGameState(
     selectedValue,
     elapsedTime,
     dailyPuzzleId,
+    errorCount,
     setBoard,
     setSolution,
     setGameStatus,

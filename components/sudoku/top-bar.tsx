@@ -6,7 +6,7 @@ import { ArrowLeftIcon, UserIcon } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 export function SudokuTopBar() {
-  const { formattedTime, difficulty, setGameStatus } = useSudoku();
+  const { formattedTime, difficulty, setGameStatus, errorCount } = useSudoku();
 
   return (
     <div className="w-full grid grid-cols-3 place-items-center">
@@ -21,12 +21,17 @@ export function SudokuTopBar() {
         >
           <ArrowLeftIcon className="w-4 h-4" />
         </Button>
-        <div>Difficulty: {difficulty}</div>
+        <div>
+          <div className="text-sm">Difficulty: {difficulty}</div>
+          <div className="text-xs text-muted-foreground">
+            Mistakes: {errorCount}
+          </div>
+        </div>
       </div>
 
       <span className="font-mono text-lg">{formattedTime}</span>
 
-      <div className="flex gap-2 justify-self-end">
+      <div className="flex gap-2 justify-self-end items-center">
         <HelpModal />
         <Button variant="outline" size="icon">
           <UserIcon />

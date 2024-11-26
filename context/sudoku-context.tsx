@@ -21,9 +21,9 @@ import {
   User,
 } from "@/lib/types";
 import confetti from "canvas-confetti";
-import { saveDailyPuzzleScore } from "@/actions/puzzles";
+import { saveDailyPuzzleScore } from "@/actions/sudoku";
 import { useAuth } from "@clerk/nextjs";
-import { getUserById } from "@/actions/users";
+import { getUserById } from "@/actions/sudoku";
 
 interface SudokuContextType {
   gameStatus: GameStatus;
@@ -37,8 +37,10 @@ interface SudokuContextType {
   canRedo: boolean;
   elapsedTime: number;
   formattedTime: string;
+  score: number;
   savedGame: SavedGameState | null;
   user: User | null;
+  errorCount: number;
   resumeGame: () => void;
   undo: () => void;
   redo: () => void;
@@ -76,6 +78,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     selectedValue,
     elapsedTime,
     dailyPuzzleId,
+    errorCount,
     setBoard,
     setGameStatus,
     setSelectedValue,
@@ -92,6 +95,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
 
   const { userId } = useAuth();
   const [user, setUser] = useState<User | null>(null);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     if (userId) checkUser(userId);
@@ -107,10 +111,27 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
 
     shootConfetti();
 
+    const scoreMultiplier =
+      difficulty === "Easy"
+        ? 1
+        : difficulty === "Medium"
+        ? 4
+        : difficulty === "Hard"
+        ? 16
+        : 64;
+
+    let score =
+      Math.floor((10000 / elapsedTime) * scoreMultiplier) -
+      errorCount * scoreMultiplier * 10;
+    score = Math.max(score, 1);
+    setScore(score);
+
     if (dailyPuzzleId) {
       const { error, message } = await saveDailyPuzzleScore(
         dailyPuzzleId,
-        elapsedTime
+        elapsedTime,
+        score,
+        errorCount
       );
       if (error) {
         console.error(message);
@@ -190,6 +211,8 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     formattedTime: formatTime(elapsedTime),
     savedGame,
     user,
+    errorCount,
+    score,
     resumeGame,
     undo,
     redo,

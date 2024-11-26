@@ -31,3 +31,12 @@ export type User = {
   id: string;
   username: string;
 };
+
+export type TopScore = {
+  id: number;
+  userId: string;
+  username: string;
+  time: number;
+  score: number;
+  errorCount: number;
+};

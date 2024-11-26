@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/drizzle";
 import { DailyPuzzles, DailyPuzzleScores, Users } from "@/drizzle/schema";
 import { auth } from "@clerk/nextjs/server";
@@ -14,7 +14,12 @@ export async function getDailyPuzzle(date: string) {
   return puzzles[0];
 }
 
-export async function saveDailyPuzzleScore(puzzleId: number, time: number) {
+export async function saveDailyPuzzleScore(
+  puzzleId: number,
+  time: number,
+  score: number,
+  errorCount: number
+) {
   try {
     const { userId } = await auth();
 
@@ -26,6 +31,8 @@ export async function saveDailyPuzzleScore(puzzleId: number, time: number) {
       userId,
       puzzleId,
       time,
+      score,
+      errorCount,
     });
 
     return { error: false, message: "Daily puzzle score saved" };
@@ -75,6 +82,8 @@ export async function getPuzzleScores(puzzleId: number) {
         id: DailyPuzzleScores.id,
         userId: DailyPuzzleScores.userId,
         time: DailyPuzzleScores.time,
+        score: DailyPuzzleScores.score,
+        errorCount: DailyPuzzleScores.errorCount,
         username: Users.username,
       })
       .from(DailyPuzzleScores)
@@ -90,4 +99,27 @@ export async function getPuzzleScores(puzzleId: number) {
     console.error("Error fetching puzzle scores:", error);
     return { topScores: [], userScore: null };
   }
+}
+
+export async function getUserById(id: string) {
+  const user = await db.select().from(Users).where(eq(Users.id, id));
+  return (
+    user[0] || {
+      id: id,
+      username: "",
+    }
+  );
+}
+
+export async function addUser(userId: string, username: string) {
+  await db
+    .insert(Users)
+    .values({
+      id: userId,
+      username,
+    })
+    .onConflictDoUpdate({
+      target: Users.id,
+      set: { username },
+    });
 }

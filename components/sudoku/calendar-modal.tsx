@@ -12,55 +12,12 @@ import {
   getCompletedPuzzles,
   getDailyPuzzle,
   getPuzzleScores,
-} from "@/actions/puzzles";
+} from "@/actions/sudoku";
 import { useSudoku } from "@/context/sudoku-context";
 import { CalendarIcon } from "lucide-react";
 import { DailyPuzzleScore } from "@/lib/types";
-import { formatTime } from "@/lib/utils";
-
-type TopScore = {
-  id: number;
-  userId: string;
-  username: string;
-  time: number;
-};
-
-function TopScores({
-  topScores,
-  userScore,
-  setTopScores,
-}: {
-  topScores: TopScore[];
-  userScore: TopScore | null;
-  setTopScores: (topScores: TopScore[]) => void;
-}) {
-  return (
-    <div className="w-full max-w-[250px]">
-      <CalendarIcon
-        className="absolute top-[1.1rem] right-10 size-[0.8rem] cursor-pointer text-gray-600 hover:text-black"
-        onClick={() => setTopScores([])}
-      />
-      {topScores.map((score, index) => {
-        const isUser = score.userId === userScore?.userId;
-        return (
-          <div
-            key={score.id}
-            className={`flex items-center gap-2 py-1 ${
-              isUser ? "text-blue-500" : ""
-            }`}
-          >
-            <span className="w-6 text-right font-medium">{index + 1}.</span>
-            <div className="flex-1 flex items-center">
-              <span className="mr-2">{score.username}</span>
-              <div className="flex-1 border-b border-dashed border-gray-300 mx-2" />
-              <span>{formatTime(score.time)}</span>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+import { TopScores } from "@/components/sudoku/top-scores";
+import { TopScore } from "@/lib/types";
 
 export function CalendarModal() {
   const [puzzles, setPuzzles] = useState<DailyPuzzleScore[]>([]);
