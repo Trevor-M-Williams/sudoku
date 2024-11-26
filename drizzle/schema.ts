@@ -29,3 +29,8 @@ export const DailyPuzzleScores = pgTable("daily_puzzle_scores", {
   time: integer("time").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const Users = pgTable("users", {
+  id: text("id").primaryKey(),
+  username: text("username").notNull().unique(),
+});

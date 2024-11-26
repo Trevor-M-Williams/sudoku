@@ -17,7 +17,6 @@ import {
   Difficulty,
   GameStatus,
   SavedGameState,
-  DailyPuzzleScore,
 } from "@/lib/types";
 import confetti from "canvas-confetti";
 import { saveDailyPuzzleScore } from "@/actions/puzzles";
