@@ -23,7 +23,10 @@ export function SudokuEndScreen() {
       }
       setLoading(false);
     };
-    fetchScores();
+
+    setTimeout(() => {
+      fetchScores();
+    }, 0);
   }, [dailyPuzzleId]);
 
   return (

@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/drizzle";
 import { DailyPuzzles, DailyPuzzleScores, Users } from "@/drizzle/schema";
 import { auth } from "@clerk/nextjs/server";
@@ -89,7 +89,7 @@ export async function getPuzzleScores(puzzleId: number) {
       .from(DailyPuzzleScores)
       .innerJoin(Users, eq(DailyPuzzleScores.userId, Users.id))
       .where(eq(DailyPuzzleScores.puzzleId, puzzleId))
-      .orderBy(DailyPuzzleScores.time);
+      .orderBy(desc(DailyPuzzleScores.score));
 
     return {
       topScores: allScores.slice(0, 10),
