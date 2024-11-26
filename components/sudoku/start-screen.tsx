@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Difficulty } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/lib/utils";
-import { ClockIcon } from "lucide-react";
+import { ClockIcon, UserIcon } from "lucide-react";
 import { CalendarModal } from "@/components/sudoku/calendar-modal";
+import { UserButton } from "@clerk/nextjs";
 
 export function SudokuStartScreen() {
   const { savedGame, startGame, resumeGame } = useSudoku();
@@ -17,6 +18,12 @@ export function SudokuStartScreen() {
         <div className="text-3xl font-bold">Sudoku</div>
         <div className="flex gap-2">
           <CalendarModal />
+          <Button variant="outline" size="icon">
+            <UserIcon />
+            <div className="absolute z-10 opacity-0">
+              <UserButton />
+            </div>
+          </Button>
         </div>
       </div>
 

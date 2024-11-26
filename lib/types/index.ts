@@ -26,3 +26,8 @@ export type DailyPuzzleScore = {
   date: string;
   createdAt: Date;
 };
+
+export type User = {
+  id: string;
+  username: string;
+};

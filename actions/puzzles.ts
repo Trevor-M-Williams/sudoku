@@ -2,7 +2,7 @@
 
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/drizzle";
-import { DailyPuzzles, DailyPuzzleScores } from "@/drizzle/schema";
+import { DailyPuzzles, DailyPuzzleScores, Users } from "@/drizzle/schema";
 import { auth } from "@clerk/nextjs/server";
 
 export async function getDailyPuzzle(date: string) {
@@ -71,13 +71,19 @@ export async function getPuzzleScores(puzzleId: number) {
     }
 
     const allScores = await db
-      .select()
+      .select({
+        id: DailyPuzzleScores.id,
+        userId: DailyPuzzleScores.userId,
+        time: DailyPuzzleScores.time,
+        username: Users.username,
+      })
       .from(DailyPuzzleScores)
+      .innerJoin(Users, eq(DailyPuzzleScores.userId, Users.id))
       .where(eq(DailyPuzzleScores.puzzleId, puzzleId))
       .orderBy(DailyPuzzleScores.time);
 
     return {
-      topScores: allScores.slice(0, 5),
+      topScores: allScores.slice(0, 10),
       userScore: allScores.find((score) => score.userId === userId),
     };
   } catch (error) {

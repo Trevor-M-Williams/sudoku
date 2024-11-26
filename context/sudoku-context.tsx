@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useCallback,
+  useState,
 } from "react";
 import { useGameState } from "@/hooks/useGameState";
 import { useHistory } from "@/hooks/useHistory";
@@ -17,9 +18,12 @@ import {
   Difficulty,
   GameStatus,
   SavedGameState,
+  User,
 } from "@/lib/types";
 import confetti from "canvas-confetti";
 import { saveDailyPuzzleScore } from "@/actions/puzzles";
+import { useAuth } from "@clerk/nextjs";
+import { getUserById } from "@/actions/users";
 
 interface SudokuContextType {
   gameStatus: GameStatus;
@@ -34,6 +38,7 @@ interface SudokuContextType {
   elapsedTime: number;
   formattedTime: string;
   savedGame: SavedGameState | null;
+  user: User | null;
   resumeGame: () => void;
   undo: () => void;
   redo: () => void;
@@ -84,6 +89,18 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
   } = useGameState(initializeHistory);
 
   const { savedGame, updateSavedGame } = useSavedGame();
+
+  const { userId } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (userId) checkUser(userId);
+
+    async function checkUser(userId: string) {
+      const user = await getUserById(userId);
+      setUser(user);
+    }
+  }, [userId]);
 
   async function handleGameComplete() {
     if (!dailyPuzzleId) return;
@@ -172,6 +189,7 @@ export function SudokuProvider({ children }: { children: React.ReactNode }) {
     elapsedTime,
     formattedTime: formatTime(elapsedTime),
     savedGame,
+    user,
     resumeGame,
     undo,
     redo,

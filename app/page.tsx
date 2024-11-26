@@ -6,11 +6,13 @@ import { SudokuTopBar } from "@/components/sudoku/top-bar";
 import { SudokuNumberBar } from "@/components/sudoku/number-bar";
 import { SudokuStartScreen } from "@/components/sudoku/start-screen";
 import { SudokuEndScreen } from "@/components/sudoku/end-screen";
+import { UsernameModal } from "@/components/sudoku/username-modal";
 
 export default function SudokuWrapper() {
   return (
     <SudokuProvider>
       <Sudoku />
+      <UsernameModal />
     </SudokuProvider>
   );
 }

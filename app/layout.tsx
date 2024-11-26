@@ -31,9 +31,6 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           {children}
-          <div className="absolute top-4 right-4">
-            <UserButton />
-          </div>
         </body>
       </html>
     </ClerkProvider>
