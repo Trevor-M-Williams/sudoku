@@ -1,6 +1,6 @@
 "use server";
 
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and, not } from "drizzle-orm";
 import { db } from "@/drizzle";
 import { DailyPuzzles, DailyPuzzleScores, Users } from "@/drizzle/schema";
 import { auth } from "@clerk/nextjs/server";
@@ -112,6 +112,16 @@ export async function getUserById(id: string) {
 }
 
 export async function addUser(userId: string, username: string) {
+  // First check if username already exists for a different user
+  const existingUser = await db
+    .select()
+    .from(Users)
+    .where(and(eq(Users.username, username), not(eq(Users.id, userId))));
+
+  if (existingUser.length > 0) {
+    throw new Error("Username already taken");
+  }
+
   await db
     .insert(Users)
     .values({

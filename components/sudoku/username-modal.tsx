@@ -17,6 +17,7 @@ export function UsernameModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -27,6 +28,7 @@ export function UsernameModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
     try {
       if (!user) return;
@@ -36,6 +38,9 @@ export function UsernameModal() {
       setIsOpen(false);
     } catch (error) {
       console.error(error);
+      setError(
+        error instanceof Error ? error.message : "Failed to set username"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -54,6 +59,7 @@ export function UsernameModal() {
             onChange={(e) => setUsername(e.target.value)}
             disabled={isLoading}
           />
+          {error && <p className="text-sm text-red-500">{error}</p>}
           <Button type="submit" disabled={isLoading || !username.trim()}>
             {isLoading ? "Setting username..." : "Set Username"}
           </Button>
