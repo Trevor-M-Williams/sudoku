@@ -119,7 +119,7 @@ export async function addUser(userId: string, username: string) {
     .where(and(eq(Users.username, username), not(eq(Users.id, userId))));
 
   if (existingUser.length > 0) {
-    throw new Error("Username already taken");
+    return { error: true, message: "Username already taken" };
   }
 
   await db
@@ -132,4 +132,6 @@ export async function addUser(userId: string, username: string) {
       target: Users.id,
       set: { username },
     });
+
+  return { error: false, message: "Username updated" };
 }

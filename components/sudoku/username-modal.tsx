@@ -34,13 +34,15 @@ export function UsernameModal() {
       if (!user) return;
       if (user.username) return;
 
-      await addUser(user.id, username);
-      setIsOpen(false);
+      const { error, message } = await addUser(user.id, username);
+      if (error) {
+        setError(message);
+      } else {
+        setIsOpen(false);
+      }
     } catch (error) {
       console.error(error);
-      setError(
-        error instanceof Error ? error.message : "Failed to set username"
-      );
+      setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
