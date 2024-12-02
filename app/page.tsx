@@ -1,6 +1,6 @@
 "use client";
 
-import { SudokuProvider, useSudoku } from "@/context/sudoku-context";
+import { useSudoku } from "@/context/sudoku-context";
 import { SudokuBoard } from "@/components/sudoku/board";
 import { SudokuTopBar } from "@/components/sudoku/top-bar";
 import { SudokuNumberBar } from "@/components/sudoku/number-bar";
@@ -10,10 +10,10 @@ import { UsernameModal } from "@/components/sudoku/username-modal";
 
 export default function SudokuWrapper() {
   return (
-    <SudokuProvider>
+    <>
       <Sudoku />
       <UsernameModal />
-    </SudokuProvider>
+    </>
   );
 }
 
