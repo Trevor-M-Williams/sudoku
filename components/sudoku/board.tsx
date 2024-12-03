@@ -5,6 +5,8 @@ import { useSudoku } from "@/context/sudoku-context";
 export function SudokuBoard() {
   const { board } = useSudoku();
 
+  if (!board || board.length !== 9) return null;
+
   return (
     <div
       className={cn(
